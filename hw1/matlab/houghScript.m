@@ -4,16 +4,17 @@ datadir     = '../data';    %the directory containing the images
 resultsdir  = '../results'; %the directory for dumping results
 
 %parameters
-sigma     = 2;
-threshold = 0.03;
+sigma     = 4;
+threshold = 0.1;
 rhoRes    = 2;
 thetaRes  = pi/90;
-nLines    = 50;
+nLines    = 150;
 %end of parameters
 
 imglist = dir(sprintf('%s/*.jpg', datadir));
 
-for i = 1:numel(imglist)
+% for i = 1:numel(imglist)
+for i = 1:1
     
     %read in images%
     [path, imgname, dummy] = fileparts(imglist(i).name);
