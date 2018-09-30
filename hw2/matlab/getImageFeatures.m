@@ -9,9 +9,15 @@ function [h] = getImageFeatures(wordMap, dictionarySize)
 
 
 	% -----fill in your implementation here --------
-
+    % count histogram
+    h = zeros(dictionarySize, 1);
+    for i = 1 : dictionarySize
+        h(i, 1) = numel(find(wordMap == i));
+    end
     
-
+    % normalize
+    h = h / sum(h);
+    h = h';
     % ------------------------------------------
 
 end

@@ -25,10 +25,10 @@ parpool('local', numCores);
 
 %load the files and texton dictionary
 load('../data/traintest.mat','all_imagenames','mapping');
-load('dictionaryHarris.mat');
+% load('dictionaryHarris.mat');
 
 %uncomment the following line to run the random version
-% load('dictionaryRandom.mat');
+load('dictionaryRandom.mat');
 
 filterBank = createFilterBank()
 
@@ -65,7 +65,7 @@ end
 fprintf('Dumping the files\n');
 for i=1:l
     wordMap = wordRepresentation{i};
-    save([target, strrep(all_imagenames{i},'.jpg','.mat')],'wordMap');
+    save([target, strrep(all_imagenames{i},'.jpg','Random.mat')],'wordMap');
 end
 
 %close the pool

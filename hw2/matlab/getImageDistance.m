@@ -1,4 +1,4 @@
-function [dist] = getImageDistance(hist1, hist2, method)
+function [dist] = getImageDistance(hist1, histSet, method)
 % Computes the distance from the feature vector (returned by getImageFeatures
 % or getImageFeaturesSPM) histogram to all of the feature vectors for the
 % training images.
@@ -14,8 +14,11 @@ function [dist] = getImageDistance(hist1, hist2, method)
 % getImageDistance(hist1, histSet, method)
 
 	% -----fill in your implementation here --------
-
-    
+    if strcmp(method, 'euclidean') == 1
+        dist = pdist2(hist1, histSet, 'euclidean');
+    else
+        dist = pdist2(hist1, histSet, 'chisq');
+    end
 
     % ------------------------------------------
 
