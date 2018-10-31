@@ -5,6 +5,7 @@ from util import plot_epipolar_lines, camera2
 import sys
 import os
 import numpy as np
+import pdb
 import scipy.io
 import skimage.io
 import matplotlib.pyplot as plt
@@ -34,17 +35,30 @@ with h5py.File(INTRINS, 'r') as f:
 
 F = eightpoint(pts1,pts2,max(im1.shape))
 F = F/F[2,2]
+print('F')
+print(F)
 
 E = essentialMatrix(F,K1,K2)
 E = E/E[2,2]
+print('E')
+print(E)
 M2s = camera2(E)
-
 
 # Q3.2 / 3.3
 C1 = np.hstack([np.eye(3),np.zeros((3,1))])
-for C2 in M2s:
+print(M2s)
+for C2 in M2s[2:]:
     P, err = triangulate(K1.dot(C1),pts1,K2.dot(C2),pts2)
     if(P.min(0)[2] > 0):
         # we're the right one!
+        scipy.io.savemat('q3_3.mat', {'M2':C2, 'C2':np.dot(K2,C2), \
+                        'p1':pts1, 'p2':pts2, 'P':P})
         break
-print(P,err)
+print('M2')
+print(C2)
+print('C2')
+print(np.dot(K2,C2))
+# print('P')
+# print(P)
+print('error')
+print(err)

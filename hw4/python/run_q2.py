@@ -4,6 +4,8 @@ from util import plot_epipolar_lines
 import sys
 import os
 import numpy as np
+import scipy.io as sio
+import pdb
 import scipy.io
 import skimage.io
 import matplotlib.pyplot as plt
@@ -26,13 +28,14 @@ pts1 = corr['pts1']
 pts2 = corr['pts2']
 idxs = np.array([82,19,56,84,54,24,18])
 
-if PARTS_RUN&1 > 0:
-    F = eightpoint(pts1,pts2,max(im1.shape))
-    F = F/F[2,2]
-    # fundamental matrix must have rank 2!
-    assert(np.linalg.matrix_rank(F) == 2)
-    print(F)
-    plot_epipolar_lines(im1,im2,F,pts1,idxs)
+# if PARTS_RUN&1 > 0:
+#     F = eightpoint(pts1,pts2,max(im1.shape))
+#     F = F/F[2,2]
+#     # fundamental matrix must have rank 2!
+#     assert(np.linalg.matrix_rank(F) == 2)
+#     print(F)
+#     plot_epipolar_lines(im1,im2,F,pts1,idxs)
+#     sio.savemat('q2_1.mat', {'M':max(im1.shape), 'F':F, 'pts1':pts1, 'pts2':pts2})
 
 # Q2.2
 if PARTS_RUN&2 > 0:
@@ -41,6 +44,8 @@ if PARTS_RUN&2 > 0:
     #idxs = np.random.choice(idxs,7,False)
     #print(idxs)
     F = sevenpoint(pts1[idxs,:],pts2[idxs,:],max(im1.shape))
-    F = F/F[2,2] 
-    print(F)
-    plot_epipolar_lines(im1,im2,F,pts1,idxs)
+    pdb.set_trace()
+    for _, f in enumerate(F):
+        f = f / f[2,2]
+        print(f)
+        plot_epipolar_lines(im1,im2,f,pts1,idxs)
