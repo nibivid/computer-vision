@@ -1,11 +1,13 @@
 import sys
 import os
 import numpy as np
+import pdb
 import scipy.io
 import skimage.io
 import matplotlib.pyplot as plt
-from util import camera2
+from util import camera2, plot_epipolar_lines
 
+from q2 import eightpoint
 from q3 import essentialMatrix,triangulate
 from q5 import ransacF, rodrigues, invRodrigues, rodriguesResidual, bundleAdjustment
 
@@ -31,12 +33,24 @@ with h5py.File(INTRINS, 'r') as f:
 corr = scipy.io.loadmat(SOME_CORRS)
 pts1 = corr['pts1']
 pts2 = corr['pts2']
+idxs = np.array([82,19,56,84,54,24,18,104])
 
 F,inliers = ransacF(pts1, pts2, max(im1.shape))
 F = F/F[2,2]
+print('RANSAC')
 print(F)
+plot_epipolar_lines(im1,im2,F,pts1,idxs)
+
+F = eightpoint(pts1,pts2,max(im1.shape))
+F = F/F[2,2]
+print('Eight Points')
+print(F)
+plot_epipolar_lines(im1,im2,F,pts1,idxs)
+
+
 
 # Q5.2
+pdb.set_trace()
 r = np.array([0,2,0])
 R = rodrigues(r)
 print('both the below should be identity')
@@ -73,5 +87,3 @@ C2n,Pn = bundleAdjustment(K1,C1,goodP1,K2,C2,goodP2,P)
 finalx =  None
 err = rodriguesResidual(K1,C1,goodP1,K2,goodP2,finalx)
 print('final error is ',err)
-
-
