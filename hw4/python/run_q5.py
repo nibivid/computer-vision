@@ -5,6 +5,7 @@ import pdb
 import scipy.io
 import skimage.io
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import axes3d, Axes3D
 from util import camera2, plot_epipolar_lines
 
 from q2 import eightpoint
@@ -33,24 +34,22 @@ with h5py.File(INTRINS, 'r') as f:
 corr = scipy.io.loadmat(SOME_CORRS)
 pts1 = corr['pts1']
 pts2 = corr['pts2']
-idxs = np.array([82,19,56,84,54,24,18,104])
 
 F,inliers = ransacF(pts1, pts2, max(im1.shape))
 F = F/F[2,2]
 print('RANSAC')
 print(F)
-plot_epipolar_lines(im1,im2,F,pts1,idxs)
+idxs = np.array([82,19,56,84,54,24,18,104])
+# plot_epipolar_lines(im1,im2,F,pts1,idxs)
 
-F = eightpoint(pts1,pts2,max(im1.shape))
-F = F/F[2,2]
-print('Eight Points')
-print(F)
-plot_epipolar_lines(im1,im2,F,pts1,idxs)
-
+# F = eightpoint(pts1,pts2,max(im1.shape))
+# F = F/F[2,2]
+# print('Eight Points')
+# print(F)
+# plot_epipolar_lines(im1,im2,F,pts1,idxs)
 
 
 # Q5.2
-pdb.set_trace()
 r = np.array([0,2,0])
 R = rodrigues(r)
 print('both the below should be identity')
@@ -63,6 +62,7 @@ print('should be r')
 print(r)
 
 # Q5.3
+# pdb.set_trace()
 E = essentialMatrix(F,K1,K2)
 E = E/E[2,2]
 M2s = camera2(E)
@@ -79,11 +79,34 @@ for C2 in M2s:
 print('original error is ',err)
 
 # you should create this from the above (using P,C2)
-initialx =  None
+R2 = C2[:, :3]
+r2 = invRodrigues(R2)
+T2 = C2[:,3]
+t2 = -np.dot(np.linalg.inv(R2), T2)
+initialx =  [P.flatten(), r2, t2]
+
 err = rodriguesResidual(K1,C1,goodP1,K2,goodP2,initialx)
 print('initial error is ',err)
 C2n,Pn = bundleAdjustment(K1,C1,goodP1,K2,C2,goodP2,P)
 # you should create this from the above (using P,C2)
-finalx =  None
+
+# pdb.set_trace()
+R2n = C2n[:, :3]
+r2n = invRodrigues(R2n)
+T2n = C2n[:,3]
+t2n = -np.dot(np.linalg.inv(R2n), T2n)
+finalx =  [Pn.flatten(), r2n, t2n]
 err = rodriguesResidual(K1,C1,goodP1,K2,goodP2,finalx)
 print('final error is ',err)
+
+fig1 = plt.figure()
+ax = Axes3D(fig1)
+ax.set_aspect('equal')
+ax.scatter(P[:,0], P[:,1], P[:,2])
+plt.show()
+
+fig2 = plt.figure()
+ax = Axes3D(fig2)
+ax.set_aspect('equal')
+ax.scatter(Pn[:,0], Pn[:,1], Pn[:,2])
+plt.show()

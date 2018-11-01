@@ -47,7 +47,7 @@ M2s = camera2(E)
 # Q3.2 / 3.3
 C1 = np.hstack([np.eye(3),np.zeros((3,1))])
 print(M2s)
-for C2 in M2s[2:]:
+for C2 in M2s:
     P, err = triangulate(K1.dot(C1),pts1,K2.dot(C2),pts2)
     if(P.min(0)[2] > 0):
         # we're the right one!

@@ -30,19 +30,19 @@ pts1 = corr['pts1']
 pts2 = corr['pts2']
 idxs = np.array([82,19,56,84,54,24,18,104])
 
-# if PARTS_RUN&1 > 0:
-#     # F = eightpoint(pts1,pts2,max(im1.shape))
-#     F = eightpoint(pts1[idxs,:],pts2[idxs,:],max(im1.shape))
-#     F = F/F[2,2]
-#     pts2e = []
-#     for idx in idxs:
-#         p2e = epipolarCorrespondence(im1,im2,F,pts1[idx,0],pts1[idx,1])
-#         pts2e.append(p2e)
-#     pts2e = np.array(pts2e)
-#     print(pts2e-pts2[idxs,:])
-#     print('Matching error: {:.2f}'.format(np.linalg.norm(pts2e-pts2[idxs,:])))
-#     plot_matched_points(im1,im2,F,pts1[idxs,:],pts2[idxs,:],pts2e)
-#     scipy.io.savemat('q2_6.mat', {'F':F, 'pts1': pts1, 'pts2':pts2})
+if PARTS_RUN&1 > 0:
+    # F = eightpoint(pts1,pts2,max(im1.shape))
+    F = eightpoint(pts1[idxs,:],pts2[idxs,:],max(im1.shape))
+    F = F/F[2,2]
+    pts2e = []
+    for idx in idxs:
+        p2e = epipolarCorrespondence(im1,im2,F,pts1[idx,0],pts1[idx,1])
+        pts2e.append(p2e)
+    pts2e = np.array(pts2e)
+    print(pts2e-pts2[idxs,:])
+    print('Matching error: {:.2f}'.format(np.linalg.norm(pts2e-pts2[idxs,:])))
+    plot_matched_points(im1,im2,F,pts1[idxs,:],pts2[idxs,:],pts2e)
+    scipy.io.savemat('q2_6.mat', {'F':F, 'pts1': pts1, 'pts2':pts2})
 
 # Q4.2
 if PARTS_RUN&2 > 0:
