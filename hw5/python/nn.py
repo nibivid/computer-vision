@@ -133,4 +133,4 @@ def forward_network(x, y, params):
     h1 = forward(x, params,'layer1')
     probs = forward(h1, params,'output', softmax)
     loss, acc = compute_loss_and_acc(y, probs)
-    return loss, acc
+    return loss, acc, probs

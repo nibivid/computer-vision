@@ -142,10 +142,10 @@ for k,v in params.items():
         # add
         idx = np.unravel_index(i,v.shape)
         params[k][idx] += eps
-        loss_add, acc_add = forward_network(x, y, params)
+        loss_add, acc_add, _ = forward_network(x, y, params)
         # sub
         params[k][idx] -= 2*eps
-        loss_sub, acc_sub = forward_network(x, y, params)
+        loss_sub, acc_sub, _ = forward_network(x, y, params)
         # get back to original value
         params[k][idx] += eps
         # compute derivative with central diffs
