@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 # you should write your functions in nn.py
 from nn import *
 from util import *
@@ -42,6 +43,7 @@ print('should be zero and one\t',test.min(),test.max())
 # implement forward
 h1 = forward(x,params,'layer1')
 print(h1.shape)
+
 # Q 2.2.2
 # implement softmax
 probs = forward(h1,params,'output',softmax)
@@ -87,21 +89,37 @@ learning_rate = 1e-3
 for itr in range(max_iters):
     total_loss = 0
     total_acc = 0
-    for xb,yb in batches:
-        pass
+    for xb, yb in batches:
         # forward
+        h1 = forward(xb,params,'layer1')
+        probs = forward(h1,params,'output',softmax)
 
         # loss
-        # be sure to add loss and accuracy to epoch totals 
+        # be sure to add loss and accuracy to epoch totals
+        loss, acc = compute_loss_and_acc(yb, probs)
+        total_loss += loss
+        total_acc += acc
 
         # backward
+        delta1 = probs
+        idx_x, idx_y = np.nonzero(yb)
+        delta1[idx_x, idx_y] -= 1
+        delta2 = backwards(delta1, params, 'output', linear_deriv)
+        backwards(delta2, params, 'layer1', sigmoid_deriv)
 
         # apply gradient
+        params['Woutput'] -= params['grad_Woutput'] * learning_rate
+        params['boutput'] -= params['grad_boutput'] * learning_rate
+        params['Wlayer1'] -= params['grad_Wlayer1'] * learning_rate
+        params['blayer1'] -= params['grad_blayer1'] * learning_rate
 
-        
+    total_acc /= batch_num
+
+
     if itr % 100 == 0:
-        print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr,total_loss,total_acc))
+        print("itr: {:02d} \t loss: {:.4f} \t acc : {:.4f}".format(itr,total_loss,total_acc))
 
+pdb.set_trace()
 
 # Q 2.5 should be implemented in this file
 # first compute the original loss and gradient, don't apply it!
@@ -114,21 +132,33 @@ params_orig = copy.deepcopy(params)
 
 eps = 1e-6
 for k,v in params.items():
-    if '_' in k: 
+    if '_' in k:
         continue
     # we have a real parameter!
     # for each value inside the parameter
-    #   add epsilon
-    #   run the network
-    #   get the loss
-    #   compute derivative with central diffs
-    
-    
+    print('compute gradient checker for ' + k)
+    for i in range(len(v.flatten())):
+        # add/sub epsilon, run the network, get the loss
+        # add
+        idx = np.unravel_index(i,v.shape)
+        params[k][idx] += eps
+        loss_add, acc_add = forward_network(x, y, params)
+        # sub
+        params[k][idx] -= 2*eps
+        loss_sub, acc_sub = forward_network(x, y, params)
+        # get back to original value
+        params[k][idx] += eps
+        # compute derivative with central diffs
+        params['grad_' + k][idx] = (loss_add - loss_sub) / (2*eps)
+        # pdb.set_trace()
+        print(loss_add, loss_sub, (loss_add - loss_sub) / (2*eps))
+
 
 total_error = 0
 for k in params.keys():
     if 'grad_' in k:
         # relative error
+        # pdb.set_trace()
         err = np.abs(params[k] - params_orig[k])/np.maximum(np.abs(params[k]),np.abs(params_orig[k]))
         err = err.sum()
         print('{} {:.2e}'.format(k, err))
