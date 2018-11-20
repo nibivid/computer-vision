@@ -18,6 +18,18 @@ def initialize_weights(in_size,out_size,params,name=''):
     params['W' + name] = W
     params['b' + name] = b
 
+def initialize_weights_with_momentum(in_size,out_size,params,name=''):
+    W, b = None, None
+    # W is size of [in_size, out_size]
+    max_value = np.sqrt(6.0 / (in_size + out_size))
+    W = np.random.uniform(low=-max_value, high=max_value, size=(in_size, out_size))
+    b = np.zeros((out_size))
+    params['W' + name] = W
+    params['b' + name] = b
+    params['mom_W' + name] = np.zeros((in_size, out_size))
+    params['mom_b' + name] = np.zeros((out_size))
+
+
 # Q 2.2.1
 # x is a matrix
 # a sigmoid activation function
