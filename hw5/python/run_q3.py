@@ -12,6 +12,19 @@ train_x, train_y = train_data['train_data'], train_data['train_labels']
 valid_x, valid_y = valid_data['valid_data'], valid_data['valid_labels']
 test_x, test_y = test_data['test_data'], test_data['test_labels']
 
+im = train_x[2000,:].reshape((32,32))
+plt.imshow(im, cmap='Greys')
+plt.show()
+pdb.set_trace()
+# im = train_x[2000,:].reshape((32,32))
+# plt.imshow(im, cmap='Greys')
+# plt.show()
+# pdb.set_trace()
+# im = train_x[3000,:].reshape((32,32))
+# plt.imshow(im, cmap='Greys')
+# plt.show()
+# pdb.set_trace()
+
 max_iters = 50
 # pick a batch size, learning rate
 batch_size = 128
