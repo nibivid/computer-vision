@@ -12,10 +12,10 @@ train_x, train_y = train_data['train_data'], train_data['train_labels']
 valid_x, valid_y = valid_data['valid_data'], valid_data['valid_labels']
 test_x, test_y = test_data['test_data'], test_data['test_labels']
 
-im = train_x[2000,:].reshape((32,32))
-plt.imshow(im, cmap='Greys')
-plt.show()
-pdb.set_trace()
+# im = train_x[2000,:].reshape((32,32))
+# plt.imshow(im, cmap='Greys')
+# plt.show()
+# pdb.set_trace()
 # im = train_x[2000,:].reshape((32,32))
 # plt.imshow(im, cmap='Greys')
 # plt.show()
@@ -52,6 +52,7 @@ valid_acc_list = []
 for itr in range(max_iters):
     total_loss = 0
     total_acc = 0
+    # pdb.set_trace()
     for xb, yb in batches:
         # training loop can be exactly the same as q2!
         # forward
