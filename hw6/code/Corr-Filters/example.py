@@ -1,8 +1,10 @@
 import numpy as np
+import pdb
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib import animation
 import matplotlib.patches as patches
+from scipy.ndimage import correlate, convolve
 
 
 img = np.load('lena.npy')
@@ -78,17 +80,68 @@ def animate(i):
         patch.set_xy(dp[i, :] + gnd_p)
         return [cropax, patch, all_patchax]
     else:  # Stuff to do after the animation ends
-        fig3d = plt.figure()
-        ax3d = fig3d.add_subplot(111, projection='3d')
-        ax3d.plot_surface(dpx.reshape(dsize), dpy.reshape(dsize),
-                          Y.reshape(dsize), cmap=plt.get_cmap('coolwarm'))
+        # fig3d = plt.figure()
+        # ax3d = fig3d.add_subplot(111, projection='3d')
+        # ax3d.plot_surface(dpx.reshape(dsize), dpy.reshape(dsize),
+        #                   Y.reshape(dsize), cmap=plt.get_cmap('coolwarm'))
 
         # Place your solution code for question 4.3 here
+        # plt.show()
+        data = np.load('X_Y_pairs.npz', X, Y)
+        X = data['arr_0']
+        Y = data['arr_1']
+        pdb.set_trace()
+        lamb = 0
+        g = np.dot(np.linalg.inv(np.dot(X.T, X) + lamb * np.eye(X.shape[0])), np.dot(X.T, Y))
+        gr0 = g.reshape(dsize)
+        output0 = correlate(img, gr0)
+        lamb = 1
+        g = np.dot(np.linalg.inv(np.dot(X.T, X) + lamb * np.eye(X.shape[0])), np.dot(X.T, Y))
+        gr1 = g.reshape(dsize)
+        output1 = correlate(img, gr1)
+        fig, axs = plt.subplots(1, 4, figsize=(6,2))
+        axs[0].imshow(gr0)
+        axs[1].imshow(output0, cmap='gray')
+        axs[2].imshow(gr1)
+        axs[3].imshow(output1, cmap='gray')
+        plt.show()
+
+        output2 = convolve(img, gr0)
+        output3 = convolve(img, gr1)
+        fig, axs = plt.subplots(1, 2, figsize=(4,2))
+        axs[0].imshow(output2, cmap='gray')
+        axs[1].imshow(output3, cmap='gray')
         plt.show()
         return []
 
 
 # Start the animation
+# data = np.load('X_Y_pairs.npz', X, Y)
+# X = data['arr_0']
+# Y = data['arr_1']
+# pdb.set_trace()
+# lamb = 0
+# g = np.dot(np.linalg.inv(np.dot(X.T, X) + lamb * np.eye(X.shape[0])), np.dot(X.T, Y))
+# gr0 = g.reshape(dsize)
+# output0 = correlate(img, gr0)
+# lamb = 1
+# g = np.dot(np.linalg.inv(np.dot(X.T, X) + lamb * np.eye(X.shape[0])), np.dot(X.T, Y))
+# gr1 = g.reshape(dsize)
+# output1 = correlate(img, gr1)
+# fig, axs = plt.subplots(1, 4, figsize=(6,2))
+# axs[0].imshow(gr0)
+# axs[1].imshow(output0, cmap='gray')
+# axs[2].imshow(gr1)
+# axs[3].imshow(output1, cmap='gray')
+# plt.show()
+#
+# output2 = convolve(img, gr0)
+# output3 = convolve(img, gr1)
+# fig, axs = plt.subplots(1, 2, figsize=(4,2))
+# axs[0].imshow(output2, cmap='gray')
+# axs[1].imshow(output3, cmap='gray')
+# plt.show()
+
 ani = animation.FuncAnimation(fig, animate, frames=N+1,
                               init_func=init, blit=True,
                               repeat=False, interval=10)
