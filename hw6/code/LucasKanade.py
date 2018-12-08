@@ -2,7 +2,7 @@ import numpy as np
 from scipy.interpolate import RectBivariateSpline
 import pdb
 
-def LucasKanade(It, It1, rect, p0 = np.zeros(2)):
+def LucasKanade(It, It1, rect, p0=np.zeros(2)):
     # Input:
     #	It: template image
     #	It1: Current image
@@ -13,18 +13,46 @@ def LucasKanade(It, It1, rect, p0 = np.zeros(2)):
     #	p: movement vector [dp_x, dp_y]
 
     # Put your implementation here
-    p = p0
-    thres = 0.05
+    p1 = p0
+    thres = 0.001
+    height, width = It.shape
+    It = RectBivariateSpline(np.arange(0, height), np.arange(0, width), It)
+    It1 = RectBivariateSpline(np.arange(0, height), np.arange(0, width), It1)
+
+    x1, y1, x2, y2 = rect
+    rect_h = y2 - y1 + 1
+    rect_w = x2 - x1 + 1
+    Y, X = np.meshgrid(np.arange(y1,y1+rect_h), np.arange(x1,x1+rect_w))
+    it = It.ev(X, Y)
 
     while True:
-        X, Y = meshgrid(rect[0]:rect[2], rect[1]:rect[3])
-        pdb.set_trace()
-        I = RectBivariateSpline(X, Y, It)
-        I1 = RectBivariateSpline(X, Y, It1)
+        it1 = It1.ev(X+p1[0], Y+p1[1])
+
+        # compute error
+        error = it - it1
+
+        # compute gradient
+        Gx, Gy = np.gradient(it1)
+        G = np.stack([Gx.flatten(), Gy.flatten()], axis=1)
+
+        # #Jacobian
+        dwdp = np.eye(2)
+
+        # Hessian
+        A = np.dot(G, dwdp)
+        H = np.dot(A.T, A)
+
+        # dp
+        dp = np.dot(np.dot(np.linalg.inv(H), A.T), error.flatten())
+
         # update
-        p = p + dp
+        p1 = p1 + dp
 
         # check whether smaller than thres
-        if dp < thres:
+        if np.linalg.norm(dp) < thres:
             break
-    return p
+
+        print(np.linalg.norm(dp))
+        # print(p1)
+
+    return p1
