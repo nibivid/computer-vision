@@ -20,16 +20,22 @@ def LucasKanadeBasis(It, It1, rect, bases):
     It1 = RectBivariateSpline(np.arange(0, height), np.arange(0, width), It1)
 
     x1, y1, x2, y2 = rect
-    rect_h = y2 - y1 + 1
-    rect_w = x2 - x1 + 1
-    Y, X = np.meshgrid(np.arange(y1,y1+rect_h), np.arange(x1,x1+rect_w))
+    # rect_h = y2 - y1 + 1
+    # rect_w = x2 - x1 + 1
+    rect_h = bases.shape[1]
+    rect_w = bases.shape[0]
+    # pdb.set_trace()
+    # print(rect_h, rect_w)
+    Y, X = np.meshgrid(np.linspace(y1,y1+rect_h,rect_h), np.linspace(x1,x1+rect_w,rect_w))
     it = It.ev(X, Y)
 
+    # pdb.set_trace()
     B = np.reshape(bases, (bases.shape[0]*bases.shape[1], bases.shape[2]))
     Gx, Gy = np.gradient(it)
     G = np.stack([Gx.flatten(), Gy.flatten()], axis=1)
     dwdp = np.eye(2)
     A = np.dot(G, dwdp)
+    # pdb.set_trace()
     HA = A - np.dot(np.dot(B, B.T), A)
     H = np.dot(HA.T, HA)
 
@@ -58,7 +64,7 @@ def LucasKanadeBasis(It, It1, rect, bases):
         dp = np.dot(np.linalg.inv(H), np.dot(HA.T, Hb))
 
         # update
-        p1 = p1 - dp
+        p1 = p1 + dp
 
         # check whether smaller than thres
         if np.linalg.norm(dp) < thres:
