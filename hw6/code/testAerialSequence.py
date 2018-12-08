@@ -15,6 +15,7 @@ frame_num = data.shape[2]
 
 masks = np.zeros(data.shape)
 for i in np.arange(1, frame_num, frame_step):
+    print("Image:",i)
     # pdb.set_trace()
     img_pre = data[:,:,i-1]
     img_cur = data[:,:,i]

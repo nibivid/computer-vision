@@ -19,7 +19,7 @@ def InverseCompositionAffine(It, It1):
     # put your implementation here
     M = np.eye(3)
     p1 = np.ones(6)
-    thres = 0.3
+    thres = 1
     # define pts
     height, width = It.shape
     Y, X = np.meshgrid(np.arange(0, height), np.arange(0, width))

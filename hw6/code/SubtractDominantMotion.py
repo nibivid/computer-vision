@@ -1,8 +1,8 @@
 import numpy as np
 from scipy.ndimage import affine_transform
-# from scipy.ndimage.morphology import binary_erosion, binary_dilation, binary_opening, disk
 import skimage.morphology
 from LucasKanadeAffine import *
+# from InverseCompositionAffine import *
 
 def SubtractDominantMotion(image1, image2):
 	# Input:
@@ -12,6 +12,7 @@ def SubtractDominantMotion(image1, image2):
     # put your implementation here
     thres = 0.08
     M = LucasKanadeAffine(image1, image2)
+    # M = InverseCompositionAffine(image1, image2)
     # warp
     # pdb.set_trace()
     image1_warp = affine_transform(image1, M[:2,:2])
